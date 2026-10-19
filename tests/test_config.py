@@ -19,13 +19,14 @@ def test_defaults(tmp_path, monkeypatch):
     assert settings.db_path == DEFAULT_DB_PATH
 
 
-def test_reads_env_values():
+def test_reads_env_values(tmp_path):
+    db_path = str(tmp_path / "some" / "path.db")
     settings = Settings.from_env(
-        {"DB_PATH": "some/path.db", "MIN_EXAMINES": "3", "MAX_BATCH_SIZE": "7"}
+        {"DB_PATH": db_path, "MIN_EXAMINES": "3", "MAX_BATCH_SIZE": "7"}
     )
     assert settings.min_examines == 3
     assert settings.max_batch_size == 7
-    assert settings.db_path == "some/path.db"
+    assert settings.db_path == db_path
 
 
 def test_creates_parent_directory(tmp_path):

@@ -1,6 +1,8 @@
 """Shared pytest fixtures.
 
-Every test app uses its own temporary SQLite file via ``tmp_path``.
+Every test app uses its own temporary SQLite file via ``tmp_path``, and every
+test runs from a throwaway working directory so nothing is written into the
+project root.
 """
 
 import pytest
@@ -8,6 +10,12 @@ from fastapi.testclient import TestClient
 
 from app.config import Settings
 from app.main import create_app
+
+
+@pytest.fixture(autouse=True)
+def isolated_cwd(tmp_path_factory, monkeypatch):
+    """Run each test from a temporary directory, not the project directory."""
+    monkeypatch.chdir(tmp_path_factory.mktemp("cwd"))
 
 
 @pytest.fixture
